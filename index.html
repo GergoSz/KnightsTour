@@ -6,10 +6,7 @@
     <script type="text/javascript" src="general.js"></script>
     <script type="text/javascript" src="cell.js"></script>
     <script type="text/javascript" src="move.js"></script>
-
-
-    <script src="jscolor.js"></script>
-
+    <script src="/jquery-3.0.0.js"></script>
 
     <link rel="stylesheet" href="main.css">
 
@@ -19,9 +16,18 @@
 
 
   <body>
+    <input type="number" id="startPointX" name="X" value="" max="8" min="0" width="190px" placeholder="gridX">
+    <input type="number" id="startPointY" name="Y" value="" max="8" min="0" placeholder="gridY">
+    <br><br>
+    <input type="button" name="HardReset" value="HardReset" onclick="hardReset()">
+    <input type="button" name="TakeAStep" value="TakeAStep" draggable="true" height="400px" width="200px" title="Take A Step" onclick="takeAStep()">
+    <br><br>
+    <input type="button" name="Solve" value="Solve" onclick="solve()">
     <h5 class="spacerDiv">
       _
     </h5>
+
+    <p>Starting point is GridX & GridY</p>
 
 
 

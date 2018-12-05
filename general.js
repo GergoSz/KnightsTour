@@ -5,9 +5,17 @@
   var moveCount = 0;
   var listOfMoves = new Array(n*n);
   var junctionCount = 0;
+  var startPointX, startPointY;
 //  var xMove = new Array(2, 1, -1, -2, -2, -1, 1, 2);      /* {2, 1, -1, -2, -2, -1, 1, 2};*/
 //  var yMove = new Array(1, 2, 2, 1, -1, -2, -2, -1);     /*{1, 2, 2, 1, -1, -2, -2, -1};*/
 
+
+function setCurrentPos(x,y) {
+  currentPos = grid[x][y];
+  currentPos.isCurrentPos = true;
+  currentPos.visited = true;
+  currentPos.moves();
+}
 
 function moveKnight(x, y){
   if(moveCount == n*n-1){
@@ -20,10 +28,7 @@ function moveKnight(x, y){
       grid[x][y].moved = moveCount;
       setAvailableFalse();
       currentPos.isCurrentPos = false;
-      currentPos = grid[x][y];
-      currentPos.isCurrentPos = true;
-      currentPos.visited = true;
-      currentPos.moves();
+      setCurrentPos(x, y);
     }
   }
 }
@@ -37,21 +42,26 @@ function reverseMove(){
       setAvailableFalse();
       currentPos.visited = false;
       currentPos.isCurrentPos = false;
-      currentPos = grid[oldX][oldY];
-      currentPos.isCurrentPos = true;
-      currentPos.visited = true;
-      currentPos.moves();
+      setCurrentPos(oldX, oldY);
       moveCount--;
     }
   }
 }
 
 function hardReset(){
+  console.log("HardReset?");
   for (var i = 0; i < n; i++) {
     for (var j = 0; j < n; j++) {
       grid[i][j] = new Cell(i, j, n, cellWidth);
     }
   }
+  for (var i = 0; i < listOfMoves.length; i++) {
+    listOfMoves[i] = null;
+  }
+  moveCount = 0;
+  document.getElementById("startPointX");
+  setCurrentPos(document.getElementById("startPointX").value,document.getElementById("startPointY").value);
+  listOfMoves[0] = new Move(currentPos.x, currentPos.y);
 }
 
 function setAvailableFalse(){
@@ -86,29 +96,14 @@ function makeGrid(){
     return arr;
 }
 
-/*function solve(){
-  for (var i = 0; i < listOfMoves.length; i++) {
-    for (var r = 0; r < 7; r++) {
-      if(currentPos.x + xMove[r] >= 0 && currentPos.x + xMove[r] <n && currentPos.y + yMove[r] >= 0 && currentPos.y + yMove[r] <n ){
-        moveKnight(currentPos.x + xMove[r], currentPos.y + yMove[r]);
-      }
-    }
-  }
-
-  if(moveCount == n*n-1){
-    console.log("solve");
-    return true;
-  }
-}*/
-
-function solve2(){
+function solve(){
 
   var solved = false;
   var tryCount = 0;
 
   while (!solved) {
 
-    step();
+    takeAStep();
 
     if (moveCount == n*n-1) {
       solved = true;
@@ -116,10 +111,10 @@ function solve2(){
     tryCount++;
   }
   //console.log(junctionCount);
-
+  solved = false;
 }
 
-function step(){
+function takeAStep(){
   var availables = [];
   availables = getAvailable();
   var best = availables[0];
@@ -152,7 +147,7 @@ function setup(){
   var width = 700;
   var cnvs = createCanvas(width + 1, width + 1);
   cellWidth = floor(width / n);
-  cnvs.position(255,25);
+  cnvs.position(280,25);
   grid = makeGrid();
 
   for (var i = 0; i < n; i++) {
@@ -165,11 +160,7 @@ function setup(){
 
 
 
-  currentPos = grid[5][5];
-  currentPos.isCurrentPos = true;
-  currentPos.visited = true;
-  //setAvailable();
-  currentPos.moves();
+  setCurrentPos(5,5);
 
   listOfMoves[0] = new Move(currentPos.x, currentPos.y);
 

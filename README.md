@@ -1,3 +1,2 @@
-KnightsTour:
-
-  Solves the Knight's Tour without backtracking.
+# KnightsTour
+Solves the Knight's tour chess problem without backtracking. 
