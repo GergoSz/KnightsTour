@@ -1,14 +1,81 @@
   var grid;
-  var n = 10;
+  var n = 8;
   var cellWidth;
   var currentPos;
   var moveCount = 0;
-  var listOfMoves = new Array(n*n);
-  var junctionCount = 0;
+  var listOfMoves = [];
   var startPointX, startPointY;
+  var solved = false;
+  var shownumbers = false;
 //  var xMove = new Array(2, 1, -1, -2, -2, -1, 1, 2);      /* {2, 1, -1, -2, -2, -1, 1, 2};*/
 //  var yMove = new Array(1, 2, 2, 1, -1, -2, -2, -1);     /*{1, 2, 2, 1, -1, -2, -2, -1};*/
 
+
+function setup(){
+  n = parseInt(document.getElementById("N").value);
+  var width = 700;
+  var cnvs = createCanvas(width + 1, width + 1);
+  cellWidth = floor(width / n);
+  cnvs.position(20,25);
+  grid = makeGrid();
+
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+      grid[i][j] = new Cell(i, j, n, cellWidth);
+    }
+  }
+
+  //currentPos = grid[floor(random(n))][floor(random(n))];
+
+
+
+  setCurrentPos(5,5);
+
+  listOfMoves[0] = new Move(currentPos.x, currentPos.y);
+
+  //console.log(listOfMoves[0]);
+  //solve();
+
+/*  for (var i = 0; i < n*n; i++) {
+    currentPos = grid[n/2-1][n/2-1];
+    currentPos.isCurrentPos = true;
+    currentPos.visited = true;
+    //setAvailable();
+    currentPos.moves();
+
+    listOfMoves[0] = new Move(currentPos.x, currentPos.y);
+
+    solve2();
+  }*/
+
+}
+
+
+function draw(){
+  background(255);
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+      grid[i][j].show();
+    }
+  }
+  if(document.getElementById("shownumbers").value == "checked"){
+    shownumbers = true;
+  }else{
+    shownumbers = false;
+  }
+  if(n != document.getElementById("N").value && document.getElementById("N").value > 7){
+    n = document.getElementById("N").value;
+    setup();
+  }
+
+ /* if(frameCount % 1 === 0 && !solved ){
+    if (moveCount == n*n-1) {
+      solved = true;
+      Reset(Math.round(random(0, n-1)), Math.round(random(0, n-1)));
+    }
+    takeAStep();
+  }*/
+}
 
 function setCurrentPos(x,y) {
   currentPos = grid[x][y];
@@ -59,18 +126,18 @@ function hardReset(){
     listOfMoves[i] = null;
   }
   moveCount = 0;
-  document.getElementById("startPointX");
   setCurrentPos(document.getElementById("startPointX").value,document.getElementById("startPointY").value);
   listOfMoves[0] = new Move(currentPos.x, currentPos.y);
+  solved = false;
 }
 
 function setAvailableFalse(){
-    for (var i = 0; i < n; i++) {
-      for (var j = 0; j < n; j++) {
-        grid[i][j].available = false;
-      }
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+      grid[i][j].available = false;
     }
   }
+}
 
 function getAvailable(){
   var listOfAvailable = [];
@@ -89,17 +156,14 @@ function getAvailable(){
 }
 
 function makeGrid(){
-    var arr = new Array(n);
-    for (var i = 0; i < arr.length; i++) {
-      arr[i] = new Array(n);
-    }
-    return arr;
+  var arr = new Array(n);
+  for (var i = 0; i < arr.length; i++) {
+    arr[i] = new Array(n);
+  }
+  return arr;
 }
 
 function solve(){
-
-  var solved = false;
-  var tryCount = 0;
 
   while (!solved) {
 
@@ -108,7 +172,6 @@ function solve(){
     if (moveCount == n*n-1) {
       solved = true;
     }
-    tryCount++;
   }
   //console.log(junctionCount);
   solved = false;
@@ -118,17 +181,17 @@ function takeAStep(){
   var availables = [];
   availables = getAvailable();
   var best = availables[0];
-  var newBest = best;
+  var newBest;
   var currentMoveCount = currentPos.moveCount;
 //  console.log(currentMoveCount);
 
-  for (var i = 0; i < currentMoveCount; i++) {
+for (var i = 0; i < currentMoveCount; i++) {
 //    console.log(newBest);
-    newBest = availables[i];
-    best.setAvailableCount();
-    newBest.setAvailableCount();
-    var bestScore = best.score;
-    var newBestScore = newBest.score;
+newBest = availables[i];
+best.setAvailableCount();
+newBest.setAvailableCount();
+var bestScore = best.score;
+var newBestScore = newBest.score;
     //console.log(bestScore);
     if (newBestScore < bestScore) {
       best = newBest;
@@ -140,49 +203,9 @@ function takeAStep(){
   }
 
   moveKnight(best.x,best.y);
-  var currentMoveCount = currentPos.moveCount;
+  currentMoveCount = currentPos.moveCount;
 }
 
-function setup(){
-  var width = 700;
-  var cnvs = createCanvas(width + 1, width + 1);
-  cellWidth = floor(width / n);
-  cnvs.position(280,25);
-  grid = makeGrid();
-
-  for (var i = 0; i < n; i++) {
-    for (var j = 0; j < n; j++) {
-      grid[i][j] = new Cell(i, j, n, cellWidth);
-    }
-  }
-
-  //currentPos = grid[floor(random(n))][floor(random(n))];
-
-
-
-  setCurrentPos(5,5);
-
-  listOfMoves[0] = new Move(currentPos.x, currentPos.y);
-
-
-
-
-  //console.log(listOfMoves[0]);
-  //solve();
-
-/*  for (var i = 0; i < n*n; i++) {
-    currentPos = grid[n/2-1][n/2-1];
-    currentPos.isCurrentPos = true;
-    currentPos.visited = true;
-    //setAvailable();
-    currentPos.moves();
-
-    listOfMoves[0] = new Move(currentPos.x, currentPos.y);
-
-    solve2();
-  }*/
-
-}
 
 function mousePressed(){
   for (var i = 0; i < n; i++) {
@@ -194,14 +217,6 @@ function mousePressed(){
   }
 }
 
-function draw(){
-  background(255);
-  for (var i = 0; i < n; i++) {
-    for (var j = 0; j < n; j++) {
-      grid[i][j].show();
-    }
-  }
-}
 
 
 function keyPressed(){
@@ -212,9 +227,20 @@ function keyPressed(){
 /*function keyPressed(){
   if(key == 's')
       solve2();
-}*/
+  }*/
 
 
 /*if(frameCount % lifeSpan === 0){
   nextGen();
 }*/
+
+function Reset(x, y){
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+      grid[i][j] = new Cell(i, j, n, cellWidth);
+    }
+  }
+  moveCount = 0;
+  setCurrentPos(x, y);
+  solved = false;
+}

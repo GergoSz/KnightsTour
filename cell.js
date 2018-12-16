@@ -34,6 +34,7 @@ Cell.prototype.show = function(){
     ellipse(this.xPos + this.w * 0.25,this.yPos + this.w * 0.25, this.w * 0.5);
   }
   fill(0);
+  if(shownumbers){
   textAlign(CENTER);
   textSize(20);
   text(this.moveCount, this.xPos + this.w * 0.25, this.yPos + this.w * 0.25);
@@ -41,6 +42,8 @@ Cell.prototype.show = function(){
   this.score = this.DistanceScore + (this.moveCount * 4);
   textSize(24);
   text(this.score, this.xPos + this.w * 0.5, this.yPos + this.w * 0.8);
+  }
+
 
 
   //text(this.moved , this.xPos + this.w * 0.5, this.yPos + this.w * 0.8);
