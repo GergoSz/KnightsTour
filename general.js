@@ -58,7 +58,7 @@ function draw(){
       grid[i][j].show();
     }
   }
-  if(document.getElementById("shownumbers").value == "checked"){
+  if(document.getElementById("shownumbers").checked){
     shownumbers = true;
   }else{
     shownumbers = false;
