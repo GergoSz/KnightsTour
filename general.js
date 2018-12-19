@@ -7,85 +7,87 @@
   var startPointX, startPointY;
   var solved = false;
   var shownumbers = false;
-//  var xMove = new Array(2, 1, -1, -2, -2, -1, 1, 2);      /* {2, 1, -1, -2, -2, -1, 1, 2};*/
-//  var yMove = new Array(1, 2, 2, 1, -1, -2, -2, -1);     /*{1, 2, 2, 1, -1, -2, -2, -1};*/
+  var slowsolvemode = false;
+  var slowsolvespeed = 10;
+  //Knight image
+  var img;
 
+  //DOM Elements
+  var startPointXdom;
+  var startPointYdom;
+  var Num;
+  var shownumbersel;
 
-function setup(){
-  n = parseInt(document.getElementById("N").value);
-  var width = 700;
-  var cnvs = createCanvas(width + 1, width + 1);
-  cellWidth = floor(width / n);
-  cnvs.position(20,25);
-  grid = makeGrid();
+  function setup(){
+    shownumbersel = document.getElementById("shownumbers");
+    startPointXdom = document.getElementById("startPointX");
+    startPointYdom = document.getElementById("startPointY");
+    Num = document.getElementById("N");
+    n = parseInt(Num.value);
+    var width = 700;
+    var cnvs = createCanvas(width + 1, width + 1);
+    cellWidth = floor(width / n);
+    cnvs.position(20,25);
+    grid = makeGrid();
 
-  for (var i = 0; i < n; i++) {
-    for (var j = 0; j < n; j++) {
-      grid[i][j] = new Cell(i, j, n, cellWidth);
+    for (var i = 0; i < n; i++) {
+      for (var j = 0; j < n; j++) {
+        grid[i][j] = new Cell(i, j, n, cellWidth);
+      }
     }
-  }
 
-  //currentPos = grid[floor(random(n))][floor(random(n))];
+    setCurrentPos(5,5);
 
-
-
-  setCurrentPos(5,5);
-
-  listOfMoves[0] = new Move(currentPos.x, currentPos.y);
-
-  //console.log(listOfMoves[0]);
-  //solve();
-
-/*  for (var i = 0; i < n*n; i++) {
-    currentPos = grid[n/2-1][n/2-1];
-    currentPos.isCurrentPos = true;
-    currentPos.visited = true;
-    //setAvailable();
-    currentPos.moves();
-
+    img = loadImage("kn.png");/*knight.jpeg, kn.png*/
     listOfMoves[0] = new Move(currentPos.x, currentPos.y);
 
-    solve2();
-  }*/
+    setSpeed(5);
+    startPointXdom.max=n;
+    startPointYdom.max=n;
+  }
 
-}
-
-
-function draw(){
-  background(255);
-  for (var i = 0; i < n; i++) {
-    for (var j = 0; j < n; j++) {
-      grid[i][j].show();
+  function draw(){   
+    background("#333");
+    for (var i = 0; i < n; i++) {
+      for (var j = 0; j < n; j++) {
+        grid[i][j].show();
+      }
     }
-  }
-  if(document.getElementById("shownumbers").checked){
-    shownumbers = true;
-  }else{
-    shownumbers = false;
-  }
-  if(n != document.getElementById("N").value && document.getElementById("N").value > 7){
-    n = document.getElementById("N").value;
-    setup();
-  }
-
- /* if(frameCount % 1 === 0 && !solved ){
-    if (moveCount == n*n-1) {
-      solved = true;
-      Reset(Math.round(random(0, n-1)), Math.round(random(0, n-1)));
+    if(shownumbersel.checked){
+      shownumbers = true;
+    }else{
+      shownumbers = false;
     }
-    takeAStep();
-  }*/
-}
+    if(n != document.getElementById("N").value && document.getElementById("N").value > 5){
+      n = document.getElementById("N").value;
+      startPointXdom.max=n;
+      //startPointXdom.value = 1;
+      startPointYdom.max=n;
+      //startPointYdom.value = 1;
+      setup();
+    }
+    if(slowsolvemode){
+      if(frameCount % slowsolvespeed === 0 && !solved){
+        takeAStep();
+        if (moveCount == n*n-1) {
+          solved = true;
+          slowsolvemode = false;
+        }
+      }
+    }
+    
+    image(img, currentPos.xPos + currentPos.w * 0.25/2 ,currentPos.yPos + currentPos.w * 0.25/2, currentPos.w * 0.75 , currentPos.w  * 0.75 ); 
+  }
 
-function setCurrentPos(x,y) {
-  currentPos = grid[x][y];
-  currentPos.isCurrentPos = true;
-  currentPos.visited = true;
-  currentPos.moves();
-}
+  function setCurrentPos(x,y) {
+    currentPos = grid[x][y];
+    currentPos.isCurrentPos = true;
+    currentPos.visited = true;
+    currentPos.moves();
+  }
 
-function moveKnight(x, y){
-  if(moveCount == n*n-1){
+  function moveKnight(x, y){
+    if(moveCount == n*n-1){
     //console.log("Done");
     return;
   }else if(x >= 0 && x < n && y >= 0 && y < n){
@@ -126,7 +128,7 @@ function hardReset(){
     listOfMoves[i] = null;
   }
   moveCount = 0;
-  setCurrentPos(document.getElementById("startPointX").value,document.getElementById("startPointY").value);
+  setCurrentPos(document.getElementById("startPointX").value-1,document.getElementById("startPointY").value-1);
   listOfMoves[0] = new Move(currentPos.x, currentPos.y);
   solved = false;
 }
@@ -164,17 +166,16 @@ function makeGrid(){
 }
 
 function solve(){
-
   while (!solved) {
-
     takeAStep();
-
     if (moveCount == n*n-1) {
       solved = true;
     }
   }
-  //console.log(junctionCount);
-  solved = false;
+}
+
+function slowSolve(){
+  slowsolvemode = true;
 }
 
 function takeAStep(){
@@ -183,27 +184,22 @@ function takeAStep(){
   var best = availables[0];
   var newBest;
   var currentMoveCount = currentPos.moveCount;
-//  console.log(currentMoveCount);
 
-for (var i = 0; i < currentMoveCount; i++) {
-//    console.log(newBest);
-newBest = availables[i];
-best.setAvailableCount();
-newBest.setAvailableCount();
-var bestScore = best.score;
-var newBestScore = newBest.score;
-    //console.log(bestScore);
+  for (var i = 0; i < currentMoveCount; i++) {
+    newBest = availables[i];
+    best.setAvailableCount();
+    newBest.setAvailableCount();
+    var bestScore = best.score;
+    var newBestScore = newBest.score;
     if (newBestScore < bestScore) {
       best = newBest;
-    }/*else if(tmpbest == tmpnewbest){
-      junctionCount++;
-      console.log(best.x, best.y);
-    }*/
+    }
 
   }
 
   moveKnight(best.x,best.y);
   currentMoveCount = currentPos.moveCount;
+  instep = false;
 }
 
 
@@ -224,6 +220,17 @@ function keyPressed(){
     reverseMove();
 }
 
+function setSpeed(sped) {
+  document.getElementById('spedtext').innerHTML = "Set step speed: " + sped.toString();
+  slowsolvespeed = (1/sped)*10;
+}
+/*
+function checkedNums(){
+  shownumbers = !shownumbers;
+  if(shownumbersel.checked)
+
+}
+*/
 /*function keyPressed(){
   if(key == 's')
       solve2();

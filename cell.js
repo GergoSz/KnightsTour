@@ -16,7 +16,7 @@ function Cell(x, y, n, w){
 
 Cell.prototype.show = function(){
   this.setAvailableCount();
-  stroke(0);
+  stroke(20);
   noFill();
   rect(this.xPos, this.yPos, this.w, this.w);
 
@@ -28,13 +28,13 @@ Cell.prototype.show = function(){
     fill(0,200,0);
     rect(this.xPos, this.yPos, this.w, this.w);
   }
-  if (this.isCurrentPos) {
+  /*if (this.isCurrentPos) {
     ellipseMode(CORNER);
     fill(127);
     ellipse(this.xPos + this.w * 0.25,this.yPos + this.w * 0.25, this.w * 0.5);
-  }
+  }*/
   fill(0);
-  if(shownumbers){
+  if(shownumbers && n <= 12){
   textAlign(CENTER);
   textSize(20);
   text(this.moveCount, this.xPos + this.w * 0.25, this.yPos + this.w * 0.25);

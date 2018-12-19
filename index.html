@@ -17,22 +17,34 @@
 
 <body>
 
-  <div class="controll_container"> 
-    <p>Width of board</p>
-    <input type="number" id="N" name="n" value="8" max="1000" min="6" step="2" placeholder="Board widht">
-    <p>Starting point is GridX & GridY</p>
-    <input type="number" id="startPointX" name="X" value="1" max="100" min="0" width="190px" placeholder="gridX">
-    <input type="number" id="startPointY" name="Y" value="1" max="100" min="0" placeholder="gridY">
-    <br><br>
+  <div class="controll-container"> 
+    <h3>Width of board:</h3>
+    <!--<input type="number" id="N" name="n" value="8" max="1000" min="6" step="2" placeholder="Board widht">-->
+    <div class="group">
+      <input type="number" id="N" name="n" value="8" max="1000" min="6" step="2"/><span class="highlight"></span><span class="bar"></span>
+      <label class="small-label">Board width</label>
+    </div>
+    <h3>Starting point is GridX & GridY:</h3>
+    <div class="group">
+      <input type="number" id="startPointX" name="X" value="1" min="1"/><span class="highlight"></span><span class="bar"></span>
+      <label class="small-label">X coord:</label>
+    </div>
+    <div class="group">
+      <input type="number" id="startPointY" name="Y" value="1" min="1"/><span class="highlight"></span><span class="bar"></span>
+      <label class="small-label">Y coord:</label>
+    </div>
     <label class="container">Show numbers
-  <input type="checkbox" id="shownumbers" checked="checked">
+  <input type="checkbox" id="shownumbers">
   <span class="checkmark"></span>
 </label>
-    <input type="button" name="HardReset" value="HardReset" onclick="hardReset()">
-    <input type="button" name="TakeAStep" value="TakeAStep" draggable="true" height="400px" width="200px" title="Take A Step" onclick="takeAStep()">
-    <br><br>
-    <input type="button" name="Solve" value="Solve" onclick="solve()">
-
+    <input class="btn btn-submit" type="button" name="HardReset" value="Reset" onclick="hardReset()">
+    <input class="btn btn-submit" type="button" name="TakeAStep" value="Take A Step" draggable="true" height="400px" width="200px" title="Take A Step" onclick="takeAStep()">
+    <input class="btn btn-submit" type="button" name="Solve" value="Solve instantly" onclick="solve()">
+    <p id="spedtext">Set step speed: </p>
+<input type="range" min="1" max="10" value="5" step="1" class="slider" id="speedSlider" onchange="setSpeed(this.value)">
+    <input class="btn btn-submit" type="button" name="SlowSolve" value="Solve step by step" onclick="slowSolve()">
+ 
+   
   </div>
 
 
